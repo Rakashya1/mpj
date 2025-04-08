@@ -3,7 +3,7 @@ package com.ecommerce.controller;
 import com.ecommerce.model.Product;
 import com.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Page; // Add this import
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +44,14 @@ public class ProductRestController {
             @RequestParam(required = false, defaultValue = "10000") BigDecimal maxPrice,
             @RequestParam(required = false, defaultValue = "0") Double rating) {
         return ResponseEntity.ok(productService.getProductsByFilters(categories, minPrice, maxPrice, rating));
+    }
+
+    @GetMapping("/price-range")
+    public ResponseEntity<List<Product>> getProductsByPriceRange(
+            @RequestParam double minPrice,
+            @RequestParam double maxPrice) {
+        List<Product> products = productService.searchByPriceRange(minPrice, maxPrice);
+        return ResponseEntity.ok(products);
     }
 
     @PostMapping

@@ -1,0 +1,51 @@
+{
+  "properties": {
+    "id": {
+      "type": "keyword"
+    },
+    "name": {
+      "type": "text",
+      "analyzer": "standard",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "description": {
+      "type": "text",
+      "analyzer": "standard"
+    },
+    "price": {
+      "type": "double"
+    },
+    "originalPrice": {
+      "type": "double"
+    },
+    "category": {
+      "type": "keyword"
+    },
+    "image": {
+      "type": "keyword"
+    },
+    "rating": {
+      "type": "double"
+    },
+    "isNew": {
+      "type": "boolean"
+    },
+    "createdAt": {
+      "type": "date"
+    },
+    "updatedAt": {
+      "type": "date"
+    },
+    "deleted": {
+      "type": "boolean"
+    },
+    "deletedAt": {
+      "type": "date"
+    }
+  }
+}

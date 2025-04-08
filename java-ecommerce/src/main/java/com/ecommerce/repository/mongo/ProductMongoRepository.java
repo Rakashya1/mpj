@@ -1,4 +1,4 @@
-package com.ecommerce.repository;
+package com.ecommerce.repository.mongo;
 
 import com.ecommerce.model.Product;
 import org.springframework.data.domain.Page;

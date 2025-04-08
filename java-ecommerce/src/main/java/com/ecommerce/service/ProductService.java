@@ -1,8 +1,8 @@
 package com.ecommerce.service;
 
 import com.ecommerce.model.Product;
-import com.ecommerce.repository.ProductElasticsearchRepository;
-import com.ecommerce.repository.ProductMongoRepository;
+import com.ecommerce.repository.elasticsearch.ProductElasticsearchRepository;
+import com.ecommerce.repository.mongo.ProductMongoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,12 +15,27 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.SearchHit;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
     private final ProductMongoRepository productMongoRepository;
     private final ProductElasticsearchRepository productElasticsearchRepository;
+    private final RestHighLevelClient restHighLevelClient;
 
     public List<Product> getAllProducts() {
         return productMongoRepository.findAll();
@@ -55,7 +70,7 @@ public class ProductService {
 
     public Page<Product> searchProducts(String query, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return productElasticsearchRepository.fuzzySearch(query, pageable);
+        return productElasticsearchRepository.findByNameOrDescriptionWithFuzzyMatch(query, pageable);
     }
 
     public Product saveProduct(Product product) {
@@ -64,10 +79,10 @@ public class ProductService {
         }
         product.setUpdatedAt(LocalDateTime.now());
         
-        // Save to MongoDB first
+        // Save to MongoDB
         Product savedProduct = productMongoRepository.save(product);
         
-        // Then save to Elasticsearch
+        // Index in Elasticsearch only for search functionality
         productElasticsearchRepository.save(savedProduct);
         
         return savedProduct;
@@ -75,6 +90,12 @@ public class ProductService {
 
     public void deleteProduct(String id) {
         productMongoRepository.deleteById(id);
+        // Also remove from Elasticsearch index
         productElasticsearchRepository.deleteById(id);
+    }
+
+    // Use MongoDB for price range search instead of Elasticsearch
+    public List<Product> searchByPriceRange(double minPrice, double maxPrice) {
+        return productMongoRepository.findByPriceRange(BigDecimal.valueOf(minPrice), BigDecimal.valueOf(maxPrice));
     }
 }

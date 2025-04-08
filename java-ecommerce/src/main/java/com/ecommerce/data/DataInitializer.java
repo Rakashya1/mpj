@@ -1,8 +1,8 @@
 package com.ecommerce.data;
 
 import com.ecommerce.model.Product;
-import com.ecommerce.repository.ProductElasticsearchRepository;
-import com.ecommerce.repository.ProductMongoRepository;
+import com.ecommerce.repository.elasticsearch.ProductElasticsearchRepository;
+import com.ecommerce.repository.mongo.ProductMongoRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

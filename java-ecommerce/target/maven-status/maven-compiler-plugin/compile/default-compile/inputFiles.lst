@@ -1,0 +1,11 @@
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/EcommerceApplication.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/config/ElasticsearchConfig.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/config/MongoConfig.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/controller/HomeController.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/controller/ProductController.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/controller/ProductRestController.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/data/DataInitializer.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/model/Product.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/repository/elasticsearch/ProductElasticsearchRepository.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/repository/mongo/ProductMongoRepository.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/service/ProductService.java

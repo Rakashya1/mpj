@@ -79,6 +79,38 @@ public class DataInitializer {
                     .image("https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&q=80")
                     .rating(4.8)
                     .isNew(true)
+                    .build(),
+                    
+                Product.builder()
+                    .name("Portable Bluetooth Speaker")
+                    .description("Waterproof portable speaker with 12-hour battery life and deep bass")
+                    .price(59.99)
+                    .originalPrice(79.99)
+                    .category("Electronics")
+                    .image("https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&q=80")
+                    .rating(4.6)
+                    .isNew(false)
+                    .build(),
+                    
+                Product.builder()
+                    .name("Yoga Mat")
+                    .description("Non-slip yoga mat with carrying strap, perfect for home or studio use")
+                    .price(29.99)
+                    .category("Sports & Outdoors")
+                    .image("https://images.unsplash.com/photo-1599447292180-45fd84092ef4?w=800&q=80")
+                    .rating(4.2)
+                    .isNew(false)
+                    .build(),
+                    
+                Product.builder()
+                    .name("Coffee Maker")
+                    .description("Programmable coffee maker with thermal carafe that keeps coffee hot for hours")
+                    .price(79.99)
+                    .originalPrice(99.99)
+                    .category("Home & Kitchen")
+                    .image("https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=800&q=80")
+                    .rating(4.4)
+                    .isNew(true)
                     .build()
             );
             

@@ -18,54 +18,56 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   useEffect(() => {
     const checkConnections = async () => {
       try {
-        // Try GitHub Codespace URL format first for MongoDB
+        // Get API base URL using the same logic as apiService
+        const getApiBaseUrl = () => {
+          const hostname = window.location.hostname;
+          if (hostname.includes(".app.github.dev")) {
+            return `https://${hostname.replace("-5173", "-8080")}`;
+          }
+          return "http://localhost:8080";
+        };
+
+        const API_BASE_URL = getApiBaseUrl();
+        console.log("Checking connections using base URL:", API_BASE_URL);
+
+        // Check MongoDB connection
         try {
-          const codespaceUrl = window.location.hostname;
           const mongoResponse = await fetch(
-            `https://${codespaceUrl.replace("-5173", "-8080")}/api/health/mongo`,
+            `${API_BASE_URL}/api/health/mongo`,
             {
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
               },
+              // Add cache busting to prevent cached responses
+              cache: "no-cache",
             },
           );
+          console.log("MongoDB response:", mongoResponse.status);
           setMongoStatus(mongoResponse.ok ? "connected" : "disconnected");
         } catch (error) {
-          // Fallback to localhost
-          try {
-            const mongoResponse = await fetch(
-              "http://localhost:8080/api/health/mongo",
-            );
-            setMongoStatus(mongoResponse.ok ? "connected" : "disconnected");
-          } catch (fallbackError) {
-            setMongoStatus("disconnected");
-          }
+          console.error("MongoDB connection check failed:", error);
+          setMongoStatus("disconnected");
         }
 
-        // Try GitHub Codespace URL format first for Elasticsearch
+        // Check Elasticsearch connection
         try {
-          const codespaceUrl = window.location.hostname;
           const elasticResponse = await fetch(
-            `https://${codespaceUrl.replace("-5173", "-8080")}/api/health/elasticsearch`,
+            `${API_BASE_URL}/api/health/elasticsearch`,
             {
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
               },
+              // Add cache busting to prevent cached responses
+              cache: "no-cache",
             },
           );
+          console.log("Elasticsearch response:", elasticResponse.status);
           setElasticStatus(elasticResponse.ok ? "connected" : "disconnected");
         } catch (error) {
-          // Fallback to localhost
-          try {
-            const elasticResponse = await fetch(
-              "http://localhost:8080/api/health/elasticsearch",
-            );
-            setElasticStatus(elasticResponse.ok ? "connected" : "disconnected");
-          } catch (fallbackError) {
-            setElasticStatus("disconnected");
-          }
+          console.error("Elasticsearch connection check failed:", error);
+          setElasticStatus("disconnected");
         }
       } catch (error) {
         console.error("Error checking connections:", error);

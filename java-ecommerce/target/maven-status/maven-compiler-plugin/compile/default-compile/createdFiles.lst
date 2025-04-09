@@ -1,12 +1,3 @@
-com/ecommerce/model/Product$ProductBuilder.class
-com/ecommerce/model/Product.class
-com/ecommerce/controller/ProductRestController.class
-com/ecommerce/repository/mongo/ProductMongoRepository.class
-com/ecommerce/data/DataInitializer.class
 com/ecommerce/EcommerceApplication.class
 com/ecommerce/config/MongoConfig.class
-com/ecommerce/service/ProductService.class
-com/ecommerce/controller/HomeController.class
-com/ecommerce/repository/elasticsearch/ProductElasticsearchRepository.class
-com/ecommerce/controller/ProductController.class
 com/ecommerce/config/ElasticsearchConfig.class

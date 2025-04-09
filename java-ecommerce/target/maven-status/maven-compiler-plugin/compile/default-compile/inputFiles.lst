@@ -1,6 +1,7 @@
 /workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/EcommerceApplication.java
 /workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/config/ElasticsearchConfig.java
 /workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/config/MongoConfig.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/controller/HealthController.java
 /workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/controller/HomeController.java
 /workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/controller/ProductController.java
 /workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/controller/ProductRestController.java

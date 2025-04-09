@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order History - ShopNow</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  </head>
+  <body>
+    <div class="container py-5">
+      <h2 class="mb-4">Order History</h2>
+      <div class="card" th:each="order : ${orders}" th:class="'card mb-4'">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <span class="text-muted">Order #</span>
+            <span th:text="${order.id}">123</span>
+          </div>
+          <div>
+            <span class="badge bg-success" th:text="${order.status}">Completed</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-borderless">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="item : ${order.items}">
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img th:src="${item.image}" alt="Product" class="me-3" style="width: 50px; height: 50px; object-fit: cover" />
+                      <span th:text="${item.productName}">Product Name</span>
+                    </div>
+                  </td>
+                  <td th:text="${item.quantity}">1</td>
+                  <td th:text="'$' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 2, 'POINT')}">$99.99</td>
+                  <td th:text="'$' + ${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 2, 'POINT')}">$99.99</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" class="text-end">Subtotal:</td>
+                  <td th:text="'$' + ${#numbers.formatDecimal(order.subtotal, 0, 'COMMA', 2, 'POINT')}">$99.99</td>
+                </tr>
+                <tr>
+                  <td colspan="3" class="text-end">Shipping:</td>
+                  <td th:text="'$' + ${#numbers.formatDecimal(order.shipping, 0, 'COMMA', 2, 'POINT')}">$9.99</td>
+                </tr>
+                <tr>
+                  <td colspan="3" class="text-end">Tax:</td>
+                  <td th:text="'$' + ${#numbers.formatDecimal(order.tax, 0, 'COMMA', 2, 'POINT')}">$8.99</td>
+                </tr>
+                <tr>
+                  <td colspan="3" class="text-end fw-bold">Total:</td>
+                  <td class="fw-bold" th:text="'$' + ${#numbers.formatDecimal(order.total, 0, 'COMMA', 2, 'POINT')}">$118.97</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer text-muted">
+          <small th:text="'Ordered on ' + ${#temporals.format(order.createdAt, 'MMM dd, yyyy HH:mm')}">Jan 1, 2024 12:00</small>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

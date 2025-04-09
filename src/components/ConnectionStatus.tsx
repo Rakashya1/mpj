@@ -18,22 +18,58 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   useEffect(() => {
     const checkConnections = async () => {
       try {
-        // Check MongoDB connection
-        const mongoResponse = await fetch(
-          "http://localhost:8080/api/health/mongo",
-        );
-        setMongoStatus(mongoResponse.ok ? "connected" : "disconnected");
-      } catch (error) {
-        setMongoStatus("disconnected");
-      }
+        // Try GitHub Codespace URL format first for MongoDB
+        try {
+          const codespaceUrl = window.location.hostname;
+          const mongoResponse = await fetch(
+            `https://${codespaceUrl.replace("-5173", "-8080")}/api/health/mongo`,
+            {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            },
+          );
+          setMongoStatus(mongoResponse.ok ? "connected" : "disconnected");
+        } catch (error) {
+          // Fallback to localhost
+          try {
+            const mongoResponse = await fetch(
+              "http://localhost:8080/api/health/mongo",
+            );
+            setMongoStatus(mongoResponse.ok ? "connected" : "disconnected");
+          } catch (fallbackError) {
+            setMongoStatus("disconnected");
+          }
+        }
 
-      try {
-        // Check Elasticsearch connection
-        const elasticResponse = await fetch(
-          "http://localhost:8080/api/health/elasticsearch",
-        );
-        setElasticStatus(elasticResponse.ok ? "connected" : "disconnected");
+        // Try GitHub Codespace URL format first for Elasticsearch
+        try {
+          const codespaceUrl = window.location.hostname;
+          const elasticResponse = await fetch(
+            `https://${codespaceUrl.replace("-5173", "-8080")}/api/health/elasticsearch`,
+            {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            },
+          );
+          setElasticStatus(elasticResponse.ok ? "connected" : "disconnected");
+        } catch (error) {
+          // Fallback to localhost
+          try {
+            const elasticResponse = await fetch(
+              "http://localhost:8080/api/health/elasticsearch",
+            );
+            setElasticStatus(elasticResponse.ok ? "connected" : "disconnected");
+          } catch (fallbackError) {
+            setElasticStatus("disconnected");
+          }
+        }
       } catch (error) {
+        console.error("Error checking connections:", error);
+        setMongoStatus("disconnected");
         setElasticStatus("disconnected");
       }
     };

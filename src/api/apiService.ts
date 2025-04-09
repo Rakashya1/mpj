@@ -2,7 +2,19 @@
  * API Service for connecting to the Java backend
  */
 
-const API_BASE_URL = "http://localhost:8080";
+// Determine API base URL based on environment
+const getApiBaseUrl = () => {
+  // Check if we're in a GitHub Codespace
+  const hostname = window.location.hostname;
+  if (hostname.includes(".app.github.dev")) {
+    // Replace the frontend port with backend port
+    return `https://${hostname.replace("-5173", "-8080")}`;
+  }
+  // Default to localhost
+  return "http://localhost:8080";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export interface Product {
   id: string;

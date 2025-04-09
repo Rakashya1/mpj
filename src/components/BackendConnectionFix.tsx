@@ -20,8 +20,16 @@ const BackendConnectionFix = () => {
     try {
       // Check MongoDB connection
       try {
+        // Try GitHub Codespace URL format first
+        const codespaceUrl = window.location.hostname;
         const mongoResponse = await fetch(
-          "http://localhost:8080/api/health/mongo",
+          `https://${codespaceUrl.replace("-5173", "-8080")}/api/health/mongo`,
+          {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          },
         );
         setMongoStatus(mongoResponse.ok ? "connected" : "disconnected");
         if (!mongoResponse.ok) {
@@ -31,18 +39,40 @@ const BackendConnectionFix = () => {
           );
         }
       } catch (error) {
-        setMongoStatus("disconnected");
-        setErrorMessage((prev) =>
-          prev
-            ? `${prev}\nMongoDB: ${error.message}`
-            : `MongoDB: ${error.message}`,
-        );
+        try {
+          // Fallback to localhost if codespace URL fails
+          const mongoResponse = await fetch(
+            "http://localhost:8080/api/health/mongo",
+          );
+          setMongoStatus(mongoResponse.ok ? "connected" : "disconnected");
+          if (!mongoResponse.ok) {
+            const errorText = await mongoResponse.text();
+            setErrorMessage((prev) =>
+              prev ? `${prev}\nMongoDB: ${errorText}` : `MongoDB: ${errorText}`,
+            );
+          }
+        } catch (fallbackError) {
+          setMongoStatus("disconnected");
+          setErrorMessage((prev) =>
+            prev
+              ? `${prev}\nMongoDB: ${fallbackError.message}`
+              : `MongoDB: ${fallbackError.message}`,
+          );
+        }
       }
 
       // Check Elasticsearch connection
       try {
+        // Try GitHub Codespace URL format first
+        const codespaceUrl = window.location.hostname;
         const elasticResponse = await fetch(
-          "http://localhost:8080/api/health/elasticsearch",
+          `https://${codespaceUrl.replace("-5173", "-8080")}/api/health/elasticsearch`,
+          {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          },
         );
         setElasticStatus(elasticResponse.ok ? "connected" : "disconnected");
         if (!elasticResponse.ok) {
@@ -54,12 +84,28 @@ const BackendConnectionFix = () => {
           );
         }
       } catch (error) {
-        setElasticStatus("disconnected");
-        setErrorMessage((prev) =>
-          prev
-            ? `${prev}\nElasticsearch: ${error.message}`
-            : `Elasticsearch: ${error.message}`,
-        );
+        try {
+          // Fallback to localhost if codespace URL fails
+          const elasticResponse = await fetch(
+            "http://localhost:8080/api/health/elasticsearch",
+          );
+          setElasticStatus(elasticResponse.ok ? "connected" : "disconnected");
+          if (!elasticResponse.ok) {
+            const errorText = await elasticResponse.text();
+            setErrorMessage((prev) =>
+              prev
+                ? `${prev}\nElasticsearch: ${errorText}`
+                : `Elasticsearch: ${errorText}`,
+            );
+          }
+        } catch (fallbackError) {
+          setElasticStatus("disconnected");
+          setErrorMessage((prev) =>
+            prev
+              ? `${prev}\nElasticsearch: ${fallbackError.message}`
+              : `Elasticsearch: ${fallbackError.message}`,
+          );
+        }
       }
     } finally {
       setIsChecking(false);

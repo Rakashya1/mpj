@@ -2,7 +2,7 @@
  * API Service for connecting to the Java backend
  */
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 export interface Product {
   id: string;
@@ -20,7 +20,9 @@ export interface Product {
 // Fetch all products
 export const fetchProducts = async (): Promise<Product[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/products`);
+    const response = await fetch(`${API_BASE_URL}/api/products`, {
+      credentials: 'include'
+    });
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
@@ -36,6 +38,7 @@ export const searchProducts = async (query: string): Promise<Product[]> => {
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/products/search?query=${encodeURIComponent(query)}`,
+      { credentials: 'include' }
     );
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
@@ -55,24 +58,16 @@ export const filterProducts = async (
   rating: number = 0,
 ): Promise<Product[]> => {
   try {
-    let url = `${API_BASE_URL}/api/products/filter?`;
+    const params = new URLSearchParams();
+    if (categories.length) categories.forEach(c => params.append('categories', c));
+    params.append('minPrice', minPrice.toString());
+    params.append('maxPrice', maxPrice.toString());
+    params.append('rating', rating.toString());
 
-    // Add categories if any
-    if (categories.length > 0) {
-      categories.forEach((category) => {
-        url += `categories=${encodeURIComponent(category)}&`;
-      });
-    }
-
-    // Add price range
-    url += `minPrice=${minPrice}&maxPrice=${maxPrice}`;
-
-    // Add rating if specified
-    if (rating > 0) {
-      url += `&rating=${rating}`;
-    }
-
-    const response = await fetch(url);
+    const response = await fetch(
+      `${API_BASE_URL}/api/products/filter?${params}`,
+      { credentials: 'include' }
+    );
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }

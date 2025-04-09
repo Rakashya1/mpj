@@ -14,3 +14,4 @@ com/ecommerce/controller/HealthController.class
 com/ecommerce/controller/HomeController.class
 com/ecommerce/controller/ProductController.class
 com/ecommerce/config/ElasticsearchConfig.class
+com/ecommerce/config/WebConfig.class

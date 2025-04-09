@@ -27,6 +27,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <start-class>com.ecommerce.EcommerceApplication</start-class>
     </properties>
 
     <build>
@@ -36,6 +37,9 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>3.2.3</version>
+                    <configuration>
+                        <mainClass>${start-class}</mainClass>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -1,4 +1,5 @@
 /workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/config/MongoRepositoryConfig.java
+/workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/config/WebConfig.java
 /workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/config/MongoConfig.java
 /workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/controller/HomeController.java
 /workspaces/mpj/java-ecommerce/src/main/java/com/ecommerce/EcommerceApplication.java

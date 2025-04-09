@@ -3,7 +3,7 @@ package com.ecommerce.controller;
 import com.ecommerce.model.Product;
 import com.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page; // Add this import
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ProductRestController {
 
     private final ProductService productService;
@@ -30,11 +31,8 @@ public class ProductRestController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<Product>> searchProducts(
-            @RequestParam String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(productService.searchProducts(query, page, size));
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam String query) {
+        return ResponseEntity.ok(productService.searchProducts(query, 0, 100).getContent());
     }
 
     @GetMapping("/filter")

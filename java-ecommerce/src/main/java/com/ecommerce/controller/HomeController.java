@@ -21,9 +21,4 @@ public class HomeController {
         model.addAttribute("products", featuredProducts);
         return "home";
     }
-
-    @GetMapping("/cart")
-    public String cart() {
-        return "cart";
-    }
 }

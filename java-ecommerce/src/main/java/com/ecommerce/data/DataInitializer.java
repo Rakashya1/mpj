@@ -8,19 +8,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 public class DataInitializer {
 
-    /**
-     * Initialize sample product data for development environment
-     */
     @Bean
-    @Profile("dev")
+    @Profile("dev") // Only run in dev profile
     public CommandLineRunner initData(ProductMongoRepository mongoRepository, 
-                                     ProductElasticsearchRepository elasticsearchRepository) {
+                                    ProductElasticsearchRepository elasticsearchRepository) {
         return args -> {
             // Clear existing data
             mongoRepository.deleteAll();
@@ -37,6 +35,7 @@ public class DataInitializer {
                     .image("https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80")
                     .rating(4.5)
                     .isNew(true)
+                    .createdAt(LocalDateTime.now())
                     .build(),
                     
                 Product.builder()
@@ -48,6 +47,7 @@ public class DataInitializer {
                     .image("https://images.unsplash.com/photo-1575311373937-040b8e1fd6b0?w=800&q=80")
                     .rating(4.3)
                     .isNew(true)
+                    .createdAt(LocalDateTime.now())
                     .build(),
                     
                 Product.builder()
@@ -58,6 +58,7 @@ public class DataInitializer {
                     .image("https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=80")
                     .rating(4.0)
                     .isNew(false)
+                    .createdAt(LocalDateTime.now())
                     .build(),
                     
                 Product.builder()
@@ -69,6 +70,7 @@ public class DataInitializer {
                     .image("https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800&q=80")
                     .rating(4.7)
                     .isNew(false)
+                    .createdAt(LocalDateTime.now())
                     .build(),
                     
                 Product.builder()
@@ -79,6 +81,7 @@ public class DataInitializer {
                     .image("https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&q=80")
                     .rating(4.8)
                     .isNew(true)
+                    .createdAt(LocalDateTime.now())
                     .build()
             );
             

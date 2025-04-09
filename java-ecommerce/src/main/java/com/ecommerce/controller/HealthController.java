@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.ecommerce.model.Product;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 @RestController
 @RequestMapping("/api/health")
@@ -32,8 +34,8 @@ public class HealthController {
     @GetMapping("/elasticsearch")
     public ResponseEntity<String> checkElasticsearchConnection() {
         try {
-            // Try to ping Elasticsearch
-            boolean isConnected = elasticsearchOperations.ping();
+            // Try to check Elasticsearch by performing a simple query
+            boolean isConnected = elasticsearchOperations.count(new NativeSearchQueryBuilder().build(), Product.class) >= 0;
             if (isConnected) {
                 return ResponseEntity.ok("Elasticsearch connection successful");
             } else {
@@ -49,7 +51,7 @@ public class HealthController {
         try {
             // Check both connections
             mongoTemplate.getDb().runCommand(new org.bson.Document("ping", 1));
-            boolean esConnected = elasticsearchOperations.ping();
+            boolean esConnected = elasticsearchOperations.count(new NativeSearchQueryBuilder().build(), Product.class) >= 0;
             
             if (esConnected) {
                 return ResponseEntity.ok("All services are healthy");

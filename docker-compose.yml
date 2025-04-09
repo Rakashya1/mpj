@@ -42,6 +42,9 @@ services:
       - SPRING_DATA_MONGODB_HOST=mongodb
       - SPRING_DATA_MONGODB_PORT=27017
       - SPRING_ELASTICSEARCH_REST_URIS=http://elasticsearch:9200
+      - SPRING_DATA_MONGODB_DATABASE=ecommerce
+      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_DATA_MONGODB_AUTO_INDEX_CREATION=true
     networks:
       - ecommerce-network
 

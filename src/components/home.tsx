@@ -259,6 +259,12 @@ const HomePage = () => {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center">
             <h1 className="text-2xl font-bold text-primary mr-8">ShopNow</h1>
+            <a
+              href="/backend-fix"
+              className="text-sm font-medium bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full hover:bg-yellow-200 transition-colors"
+            >
+              Fix Backend Connection
+            </a>
             <ConnectionStatus className="hidden md:flex" />
             <nav className="hidden md:flex space-x-6">
               <a href="#" className="text-sm font-medium hover:text-primary">

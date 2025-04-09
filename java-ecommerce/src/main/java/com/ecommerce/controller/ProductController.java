@@ -82,6 +82,7 @@ public class ProductController {
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("rating", rating);
         
-        return "product/filtered-list";
+        // Change from "product/filtered-list" to "product/list"
+        return "product/list";
     }
 }

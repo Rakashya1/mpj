@@ -1,30 +1,40 @@
-# React + TypeScript + Vite
+# Start MongoDB
+docker run -d \
+  --name mongodb \
+  -p 27017:27017 \
+  mongo:latest
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Start Elasticsearch with reduced memory
+docker run -d \
+  --name elasticsearch \
+  -p 9200:9200 -p 9300:9300 \
+  -e "discovery.type=single-node" \
+  -e "xpack.security.enabled=false" \
+  -e "ES_JAVA_OPTS=-Xms256m -Xmx256m" \
+  docker.elastic.co/elasticsearch/elasticsearch:8.17.4
 
-Currently, two official plugins are available:
+# Start MongoDB CLI to check data
+docker exec -it mongodb mongosh
+use ecommerce
+db.orders.find()  # View all orders
+db.products.find() # View all products
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Navigate to backend directory
+cd /workspaces/e-commerce-website/java-ecommerce
 
-## Expanding the ESLint configuration
+# Build and run with data initialization
+./mvnw spring-boot:run -Dspring.profiles.active=dev
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+# API Endpoints for checking data:
+# List all orders: GET http://localhost:8080/api/orders
+# List all products: GET http://localhost:8080/api/products
+# View specific order: GET http://localhost:8080/api/orders/{orderId}
 
-- Configure the top-level `parserOptions` property like this:
+# Navigate to frontend directory 
+cd /workspaces/e-commerce-website
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+# Install dependencies
+npm install
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+# Start development server
+npm run dev

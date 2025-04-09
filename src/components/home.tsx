@@ -1,22 +1,46 @@
-import React, { useState } from "react";
-import { Search, ShoppingCart } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Search, ShoppingCart, AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import ProductGrid from "./ProductGrid";
 import FilterSidebar from "./FilterSidebar";
 import CartPreview from "./CartPreview";
+import ConnectionStatus from "./ConnectionStatus";
+import {
+  fetchProducts,
+  searchProducts,
+  filterProducts,
+  Product as ApiProduct,
+} from "@/api/apiService";
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  rating: number;
-  category: string;
-}
+// Using the Product interface from apiService
+type Product = ApiProduct;
 
 const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Handle search with debounce
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (searchQuery.trim()) {
+        try {
+          setLoading(true);
+          const results = await searchProducts(searchQuery);
+          setProducts(results);
+        } catch (err) {
+          console.error("Error searching products:", err);
+          // Client-side search will be handled by the filteredProducts variable
+        } finally {
+          setLoading(false);
+        }
+      } else if (searchQuery === "") {
+        // If search is cleared, reload all products
+        fetchProducts().then(setProducts).catch(console.error);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [activeFilters, setActiveFilters] = useState({
@@ -26,84 +50,106 @@ const HomePage = () => {
   });
   const [sortOption, setSortOption] = useState("newest");
 
-  // Mock products data
-  const mockProducts: Product[] = [
-    {
-      id: "1",
-      name: "Wireless Headphones",
-      price: 129.99,
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80",
-      rating: 4.5,
-      category: "Electronics",
-    },
-    {
-      id: "2",
-      name: "Smart Watch",
-      price: 199.99,
-      image:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80",
-      rating: 4.2,
-      category: "Electronics",
-    },
-    {
-      id: "3",
-      name: "Running Shoes",
-      price: 89.99,
-      image:
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80",
-      rating: 4.7,
-      category: "Fashion",
-    },
-    {
-      id: "4",
-      name: "Coffee Maker",
-      price: 59.99,
-      image:
-        "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&q=80",
-      rating: 4.0,
-      category: "Home",
-    },
-    {
-      id: "5",
-      name: "Backpack",
-      price: 49.99,
-      image:
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&q=80",
-      rating: 4.3,
-      category: "Fashion",
-    },
-    {
-      id: "6",
-      name: "Desk Lamp",
-      price: 29.99,
-      image:
-        "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80",
-      rating: 3.8,
-      category: "Home",
-    },
-    {
-      id: "7",
-      name: "Bluetooth Speaker",
-      price: 79.99,
-      image:
-        "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&q=80",
-      rating: 4.6,
-      category: "Electronics",
-    },
-    {
-      id: "8",
-      name: "Yoga Mat",
-      price: 24.99,
-      image:
-        "https://images.unsplash.com/photo-1599447292180-45fd84092ef4?w=500&q=80",
-      rating: 4.1,
-      category: "Sports",
-    },
-  ];
+  // State for products loaded from API
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load products from API on component mount
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchProducts();
+        setProducts(data);
+        setError(null);
+      } catch (err) {
+        setError("Failed to load products. Using fallback data.");
+        // Fallback to mock data if API fails
+        setProducts([
+          {
+            id: "1",
+            name: "Wireless Headphones",
+            price: 129.99,
+            image:
+              "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80",
+            rating: 4.5,
+            category: "Electronics",
+          },
+          {
+            id: "2",
+            name: "Smart Watch",
+            price: 199.99,
+            image:
+              "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80",
+            rating: 4.2,
+            category: "Electronics",
+          },
+          {
+            id: "3",
+            name: "Running Shoes",
+            price: 89.99,
+            image:
+              "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80",
+            rating: 4.7,
+            category: "Fashion",
+          },
+          {
+            id: "4",
+            name: "Coffee Maker",
+            price: 59.99,
+            image:
+              "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&q=80",
+            rating: 4.0,
+            category: "Home",
+          },
+          {
+            id: "5",
+            name: "Backpack",
+            price: 49.99,
+            image:
+              "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&q=80",
+            rating: 4.3,
+            category: "Fashion",
+          },
+          {
+            id: "6",
+            name: "Desk Lamp",
+            price: 29.99,
+            image:
+              "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80",
+            rating: 3.8,
+            category: "Home",
+          },
+          {
+            id: "7",
+            name: "Bluetooth Speaker",
+            price: 79.99,
+            image:
+              "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&q=80",
+            rating: 4.6,
+            category: "Electronics",
+          },
+          {
+            id: "8",
+            name: "Yoga Mat",
+            price: 24.99,
+            image:
+              "https://images.unsplash.com/photo-1599447292180-45fd84092ef4?w=500&q=80",
+            rating: 4.1,
+            category: "Sports",
+          },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
 
   // Filter products based on search query and active filters
-  const filteredProducts = mockProducts.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     // Search filter
     if (
       searchQuery &&
@@ -175,8 +221,35 @@ const HomePage = () => {
     setCartItems(updatedCart);
   };
 
-  const handleFilterChange = (filters: typeof activeFilters) => {
+  const handleFilterChange = async (filters: typeof activeFilters) => {
     setActiveFilters(filters);
+
+    // If we have active filters, try to use the backend filtering API
+    if (
+      filters.categories.length > 0 ||
+      filters.priceRange.min > 0 ||
+      filters.priceRange.max < 1000 ||
+      filters.rating > 0
+    ) {
+      try {
+        setLoading(true);
+        const filteredData = await filterProducts(
+          filters.categories,
+          filters.priceRange.min,
+          filters.priceRange.max,
+          filters.rating,
+        );
+        setProducts(filteredData);
+      } catch (err) {
+        console.error("Error applying filters from API:", err);
+        // We'll fall back to client-side filtering in the filteredProducts variable
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // If no filters, reload all products
+      fetchProducts().then(setProducts).catch(console.error);
+    }
   };
 
   return (
@@ -186,6 +259,7 @@ const HomePage = () => {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center">
             <h1 className="text-2xl font-bold text-primary mr-8">ShopNow</h1>
+            <ConnectionStatus className="hidden md:flex" />
             <nav className="hidden md:flex space-x-6">
               <a href="#" className="text-sm font-medium hover:text-primary">
                 Home
@@ -247,15 +321,19 @@ const HomePage = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-center">
+            <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
+            <p className="text-red-700">{error}</p>
+          </div>
+        )}
         <div className="flex flex-col md:flex-row gap-6">
           {/* Filter Sidebar */}
           <aside className="w-full md:w-64 shrink-0">
             <FilterSidebar
               activeFilters={activeFilters}
               onFilterChange={handleFilterChange}
-              categories={Array.from(
-                new Set(mockProducts.map((p) => p.category)),
-              )}
+              categories={Array.from(new Set(products.map((p) => p.category)))}
             />
           </aside>
 

@@ -61,6 +61,7 @@
                     class="form-control"
                     name="query"
                     placeholder="Search products..."
+                    required
                   />
                   <button class="btn btn-outline-secondary" type="submit">
                     <i class="bi bi-search"></i>
@@ -511,5 +512,46 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        // Handle sort select change
+        const sortSelect = document.getElementById("sortSelect");
+        sortSelect.addEventListener("change", function() {
+          const [field, direction] = this.value.split(",");
+          window.location.href = `/products?sort=${field}&direction=${direction}`;
+        });
+
+        // Handle filter form submission
+        const filterForm = document.getElementById("filterForm");
+        filterForm.addEventListener("submit", function(e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          const params = new URLSearchParams();
+
+          // Add categories
+          const categories = formData.getAll("categories");
+          categories.forEach(cat => params.append("categories", cat));
+
+          // Add price range
+          params.append("minPrice", formData.get("minPrice"));
+          params.append("maxPrice", formData.get("maxPrice"));
+
+          // Add rating
+          const rating = formData.get("rating");
+          if (rating) {
+            params.append("rating", rating);
+          }
+
+          // Redirect with filters
+          window.location.href = `/products/filter?${params.toString()}`;
+        });
+
+        // Handle filter reset
+
+        const resetButton = filterForm.querySelector('button[type="reset"]');        resetButton.addEventListener("click", function() {
+          window.location.href = "/products";
+        });
+      });
+    </script>
   </body>
 </html>
